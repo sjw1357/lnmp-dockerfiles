@@ -7,7 +7,7 @@ services:
     links:
       - mysql-db:mysql-db
       - redis-db:redis-db
-      - memcached:memcached
+#      - memcached:memcached
     volumes:
       - ../app:/data/www:rw
       - ./php/php.ini:/usr/local/etc/php/php.ini:ro # 当前php配置文件；可以拷贝修改php-dev.ini为想要的配置
@@ -44,10 +44,10 @@ services:
         - ../logs/mysql:/var/lib/mysql-logs:rw
         - ./mysql/conf.d:/etc/mysql/conf.d:ro
       environment:
-        MYSQL_ROOT_PASSWORD: 5eNyjNf # root密码 自行修改
-        MYSQL_DATABASE: rageframe # 数据库名
-        MYSQL_USER: rageframe
-        MYSQL_PASSWORD: 2589632147
+        MYSQL_ROOT_PASSWORD: 123456 # root密码 自行修改
+        MYSQL_DATABASE: sjw # 数据库名
+        MYSQL_USER: suojianwei
+        MYSQL_PASSWORD: 123456
       restart: always
       command: "--character-set-server=utf8"
 
@@ -58,10 +58,10 @@ services:
       volumes:
         - ./redis/redis.conf:/etc/redis/redis.conf:rw
         - ../data/redis:/data:rw
-        - ../logs/redis:/var/log/:rw
+        - ../logs/redis:/tmp/log/:rw
       restart: always
 
-  memcached:
-      build: ./memcached
-      ports:
-        - "11211:11211"
+#  memcached:
+#      build: ./memcached
+#      ports:
+#        - "11211:11211"

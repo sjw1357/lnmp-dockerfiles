@@ -14,9 +14,9 @@ RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libpng-dev \
-		libssl-dev \
-	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-	&& docker-php-ext-install -j$(nproc) gd \
+        libssl-dev \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd \
         && docker-php-ext-install zip \
         && docker-php-ext-install pdo_mysql \
         && docker-php-ext-install opcache \
@@ -25,25 +25,25 @@ RUN apt-get update && apt-get install -y \
 
 # 将预先下载好的拓展包从宿主机拷贝进去
 COPY ./pkg/redis.tgz /home/redis.tgz
-COPY ./pkg/libmemcached.tar.gz /home/libmemcached.tar.gz
-COPY ./pkg/memcached.tgz /home/memcached.tgz
+#COPY ./pkg/libmemcached.tar.gz /home/libmemcached.tar.gz
+#COPY ./pkg/memcached.tgz /home/memcached.tgz
 
 # 安装 PECL 拓展，这里我们安装的是Redis
 RUN pecl install /home/redis.tgz && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
 
-# 安装libmemcached
-RUN tar zxvf /home/libmemcached.tar.gz \
-    && cd libmemcached-1.0.18 \
-    && ./configure --prefix=/usr/local/libmemcached --with-memcached \
-    && make && make install
-
-# 安装memcached
-RUN tar zxvf /home/memcached.tgz \
-    && cd memcached-3.0.4 \
-    && phpize \
-    && ./configure -enable-memcached -with-php-config=/usr/local/bin/php-config -with-zlib-dir -with-libmemcached-dir=/usr/local/libmemcached -prefix=/usr/local/phpmemcached -disable-memcached-sasl \
-    && make && make install \
-    && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini
+## 安装libmemcached
+#RUN tar zxvf /home/libmemcached.tar.gz \
+#    && cd libmemcached-1.0.18 \
+#    && ./configure --prefix=/usr/local/libmemcached --with-memcached \
+#    && make && make install
+#
+## 安装memcached
+#RUN tar zxvf /home/memcached.tgz \
+#    && cd memcached-3.0.4 \
+#    && phpize \
+#    && ./configure -enable-memcached -with-php-config=/usr/local/bin/php-config -with-zlib-dir -with-libmemcached-dir=/usr/local/libmemcached -prefix=/usr/local/phpmemcached -disable-memcached-sasl \
+#    && make && make install \
+#    && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini
 
 # 安装 Swoole
 RUN cd /home \
@@ -62,8 +62,8 @@ ENV PATH $COMPOSER_HOME/vendor/bin:$PATH
 
 # 删除扩展包
 RUN rm -f /home/redis.tgz
-RUN rm -f /home/libmemcached.tar.gz
-RUN rm -f /home/memcached.tgz
+#RUN rm -f /home/libmemcached.tar.gz
+#RUN rm -f /home/memcached.tgz
 
 WORKDIR /data
 
